@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UsuarioMapper">
+
+    <resultMap id="resMapUsuarioMapper" 					type="aliasUsuario">
+        <result property="usuario_id" 					column="USUARIO_ID" />
+        <result property="nombre" 			    		column="NOMBRE" />
+        <result property="email" 					    column="EMAIL" />
+        <result property="contrasena" 			    	column="CONTRASENA" />
+        <result property="rol" 			   				column="ROL" />
+    </resultMap>
+    
+    <insert id="guardarUsuario" parameterType="aliasUsuario">
+    	INSERT INTO USUARIO 
+    		(NOMBRE,
+    		 EMAIL, 
+    		 CONTRASENA,
+    		 ROL) 
+		VALUES
+			(UPPER(#{nombre,jdbcType=VARCHAR}),
+			 #{email,jdbcType=VARCHAR},
+			 #{contrasena,jdbcType=VARCHAR},
+			 #{rol, jdbcType=VARCHAR})
+    </insert>
+    
+	<select id="SelectXUsuario"  parameterType="aliasUsuario" resultMap="resMapUsuarioMapper">
+  		SELECT 
+  			USUARIO_ID,
+  			NOMBRE,
+  			EMAIL,
+  			CONTRASENA,
+  			ROL
+  			FROM USUARIO
+  		WHERE UPPER(NOMBRE) =	
+	</select>
+</mapper>

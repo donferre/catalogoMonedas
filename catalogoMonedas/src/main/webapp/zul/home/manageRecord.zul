@@ -1,0 +1,104 @@
+<zk xmlns:n="native">
+	<window title="Registro de Moneda" border="normal" width="600px"
+		viewModel="@id('vm') @init('com.viewmodel.home.ManageRecordViewModel')"
+		position="center,center" closable="true"
+		action="show: slideDown;hide: slideUp">
+		<vlayout>
+			<grid>
+				<columns hflex="true">
+					<column width="130px" />
+					<column hflex="true" />
+				</columns>
+				<rows>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Nombre: "
+								tooltiptext="Nombre de la moneda." />
+						</hlayout>
+						<textbox width="300px"
+							style="text-transform:uppercase;" constraint="no empty"
+							maxlength="20" value="@bind(vm.moneda.nombre)"
+							onChange="@command('validaGuardar')" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="" tooltiptext="Campo opcional"
+								style="margin-left:5px" />
+							<label value="Descripción: "
+								tooltiptext="Breve descripción historica de la moneda." />
+						</hlayout>
+						<textbox width="300px" rows="3" style="resize:vertical" maxlength="100"
+							value="@bind(vm.moneda.descripcion)" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Año de Fabricación: "
+								tooltiptext="Ingrese el año que fue fabricada la moneda." />
+						</hlayout>
+						<datebox width="150px" constraint="no empty"
+							onChange="@command('validaGuardar')"
+							value="@bind(vm.moneda.anoCreacion)" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Pais: "
+								tooltiptext="Pais de donde se origina la moneda." />
+						</hlayout>
+						<textbox width="150px"
+							style="text-transform:uppercase;" constraint="no empty"
+							maxlength="18" value="@bind(vm.moneda.pais)"
+							onChange="@command('validaGuardar')" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Valor: "
+								tooltiptext="Valor monetario equivalente de la moneda." />
+						</hlayout>
+						<decimalbox width="150px" constraint="no empty"
+							maxlength="5" value="@bind(vm.moneda.valor)"
+							onChange="@command('validaGuardar')" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="" tooltiptext="Campo opcional"
+								style="margin-left:5px" />
+							<label value="Material "
+								tooltiptext="Material construida la moneda." />
+						</hlayout>
+						<textbox width="150px"
+							style="text-transform:uppercase;" maxlength="15"
+							value="@bind(vm.moneda.material)" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="" tooltiptext="Campo opcional"
+								style="margin-left:5px" />
+							<label value="Imagen "
+								tooltiptext="Material construida la moneda." />
+						</hlayout>
+						<image width="150px" 
+							src="@bind(vm.moneda.imagen)" />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<div align="right">
+				<hlayout>
+					<button label="Guardar"
+						tooltiptext="Guardar Registro" disabled="@bind(vm.camposForm)"
+						onClick="@command('onGuardarMoneda')" />
+					<button id="closeBtn" label="Cancelar"
+						tooltiptext="Cancelar" onClick="@command('onCancelar')" />
+				</hlayout>
+			</div>
+		</vlayout>
+	</window>
+</zk>

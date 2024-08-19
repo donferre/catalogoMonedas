@@ -1,0 +1,63 @@
+<zk xmlns:n="native">
+	<window title="Registro de Usuario" border="normal" width="460px"
+		viewModel="@id('vm') @init('com.viewmodel.RegistroUsersViewModel')"
+		position="center,center" closable="true"
+		action="show: slideDown;hide: slideUp">
+		<vlayout>
+			<grid>
+				<columns hflex="true">
+					<column width="130px" />
+					<column hflex="true" />
+				</columns>
+				<rows>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Usuario: "
+								tooltiptext="Nombre que identifica al usuario." />
+						</hlayout>
+						<textbox
+							tooltiptext="Nombre que identifica al usuario." width="150px"
+							style="text-transform:uppercase;" constraint="no empty"
+							maxlength="15" value="@bind(vm.usuario.nombre)" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Contraseña: "
+								tooltiptext="Contraseña para iniciar sesion." />
+						</hlayout>
+						<textbox type="password"
+							tooltiptext="Contraseña para iniciar sesion." width="150px"
+							constraint="no empty" maxlength="8"
+							value="@bind(vm.usuario.contrasena)" />
+					</row>
+					<row>
+						<hlayout>
+							<label value="*"
+								tooltiptext="Campo obligatorio" style="color: red" />
+							<label value="Confirma Contraseña: "
+								tooltiptext="Confirma contraseña." />
+						</hlayout>
+						<textbox type="password"
+							tooltiptext="Confirma contraseña." width="150px"
+							constraint="no empty" maxlength="8"
+							value="@bind(vm.contrasena)" />
+					</row>
+				</rows>
+			</grid>
+			<separator />
+			<div align="right">
+				<hlayout>
+					<button label="Guardar"
+						tooltiptext="Guardar Registro"
+						onClick="@command('onGuardarUsuario')" />
+					<button id="closeBtn" label="Cancelar" tooltiptext="Cancelar"
+						onClick="self.getRoot().detach()" />
+				</hlayout>
+			</div>
+		</vlayout>
+	</window>
+</zk>

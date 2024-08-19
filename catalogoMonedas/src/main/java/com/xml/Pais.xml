@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PaisMapper">
+
+    <resultMap id="resMapPaisMapper" 		type="aliasPais">
+        <result property="id" 				column="ID" />
+        <result property="nombre" 			column="NOMBRE" />
+    </resultMap>
+    
+	<select id="SelectXPais"  parameterType="aliasPais" resultMap="resMapPaisMapper">
+  		SELECT 
+  			ID,
+  			NOMBRE
+  			FROM PAIS
+  		WHERE  ID = #{ID, jdbcType=NUMERIC}
+	</select>
+	
+	<select id="listadoPaginadoXPais"  parameterType="Map" resultMap="resMapPaisMapper">
+  		SELECT 
+  			ID,
+  			NOMBRE
+  			FROM PAIS
+  		<trim prefix="WHERE" prefixOverrides="AND | OR ">
+			<if test="id != null ">
+				AND ID = #{id,jdbcType=NUMERIC} 
+			</if>
+		</trim>
+	</select>
+</mapper>
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MonedaMapper">
+
+    <resultMap id="resMapMonedaMapper" 			type="aliasMoneda">
+        <result property="monedaID" 			column="MONEDA_ID" />
+        <result property="nombre" 			    column="NOMBRE" />
+        <result property="anoCreacion" 			column="ANO_CREACION" />
+        <result property="pais.pais" 			column="PAIS" />
+        <result property="pais.pais" 			column="PAIS" />
+        <result property="valor" 			   	column="VALOR" />
+        <result property="material" 			column="MATERIAL" />
+        <result property="descripcion" 			column="DESCRIPCION" />
+        <result property="imagen" 				column="IMAGEN" />
+        <result property="usuario.usuario_id"	column="USUARIO_ID" />
+        <result property="codigo" 			   	column="CODIGO" />
+    </resultMap>
+    
+	 <insert id="guardarMoneda" parameterType="aliasMoneda">
+	    INSERT INTO MONEDA 
+	       (NOMBRE,
+	        ANO_CREACION,
+	        PAIS,
+	        VALOR,
+	        MATERIAL,
+	        DESCRIPCION,
+	        IMAGEN,
+	        USUARIO_ID) 
+	    VALUES
+	        (UPPER(#{nombre,jdbcType=VARCHAR}),
+	         #{anoCreacion,jdbcType=DATE},
+	         #{pais,jdbcType=VARCHAR},
+	         #{valor, jdbcType=NUMERIC},
+	         UPPER(#{material,jdbcType=VARCHAR}),
+	         UPPER(#{descripcion,jdbcType=VARCHAR}),
+	         #{imagen,jdbcType=BLOB},
+	         #{usuario.usuario_id, jdbcType=NUMERIC})
+	</insert>
+
+    
+    <update id="ActualizarMoneda" parameterType="aliasMoneda">
+    	UPDATE MONEDA 
+    	   SET 
+    	    NOMBRE        = UPPER(#{nombre,jdbcType=VARCHAR}),
+			ANO_CREACION  =	#{anoCreacion,jdbcType=DATE},
+			PAIS          =	#{pais,jdbcType=VARCHAR},
+			VALOR         =	#{valor, jdbcType=NUMERIC})
+			MATERIAL      =	UPPER(#{material,jdbcType=VARCHAR}),
+			DESCRIPCION   =	UPPER(#{descripcion,jdbcType=VARCHAR}),
+			IMAGEN        =	#{imagen,jdbcType=BLOB}
+			WHERE MONEDA_ID = #{monedaId, jdbcType=NUMERIC}
+			 AND USUARIO_ID = #{usuario.usuario_id, jdbcType=NUMERIC};
+    </update>
+    
+    <delete id="EliminarMoneda" parameterType="aliasMoneda">
+    	DELETE FROM MONEDA
+			WHERE MONEDA_ID = #{monedaId, jdbcType=NUMERIC}
+			 AND USUARIO_ID = #{usuario.usuario_id, jdbcType=NUMERIC};
+    </delete>
+    
+	<select id="SelectXMoneda"  parameterType="aliasMoneda" resultMap="resMapMonedaMapper">
+  		SELECT
+	  		 MON.MONEDA_ID,
+	  		 MON.NOMBRE,
+	  		 MON.ANO_CREACION, 
+	  		 MON.PAIS_ID, 
+	  		 MON.VALOR,
+	  		 MON.MATERIAL,
+	  		 MON.DESCRIPCION,
+	  		 MON.IMAGEN,
+	  		 MON.USUARIO_ID
+  	 	FROM MONEDA MON 
+  		WHERE MON.MONEDA_ID = #{monedaId, jdbcType=NUMERIC}
+	</select>
+	
+	<select id="listadoPaginadoXMoneda"  parameterType="Map" resultMap="resMapMonedaMapper">
+  		SELECT
+	  		 MON.MONEDA_ID,
+	  		 MON.NOMBRE,
+	  		 MON.ANO_CREACION, 
+	  		 MON.PAIS_ID, 
+	  		 MON.VALOR,
+	  		 MON.MATERIAL,
+	  		 MON.DESCRIPCION,
+	  		 MON.IMAGEN,
+	  		 MON.USUARIO_ID
+  	 	FROM MONEDA MON 
+  	 	INNER JOIN PAIS PAI ON PAI.ID = MON.PAIS_ID
+  		<trim prefix="WHERE" prefixOverrides="AND | OR ">
+			<if test="usuario != null and usuario.usuario_id != null ">
+				AND MON.USUARIO_ID = #{usuario.usuario_id,jdbcType=NUMERIC} 
+			</if>
+		</trim>
+	</select>
+</mapper>
+
