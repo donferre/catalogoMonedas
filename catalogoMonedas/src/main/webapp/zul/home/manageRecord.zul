@@ -1,12 +1,12 @@
 <zk xmlns:n="native">
-	<window title="Registro de Moneda" border="normal" width="600px"
+	<window title="Registro de Moneda" border="normal" width="700px"
 		viewModel="@id('vm') @init('com.viewmodel.home.ManageRecordViewModel')"
 		position="center,center" closable="true"
 		action="show: slideDown;hide: slideUp">
 		<vlayout>
 			<grid>
 				<columns hflex="true">
-					<column width="130px" />
+					<column width="180px" />
 					<column hflex="true" />
 				</columns>
 				<rows>
@@ -29,7 +29,8 @@
 							<label value="Descripción: "
 								tooltiptext="Breve descripción historica de la moneda." />
 						</hlayout>
-						<textbox width="300px" rows="3" style="resize:vertical" maxlength="100"
+						<textbox width="300px" rows="3"
+							style="resize:vertical" maxlength="100"
 							value="@bind(vm.moneda.descripcion)" />
 					</row>
 					<row>
@@ -47,13 +48,17 @@
 						<hlayout>
 							<label value="*"
 								tooltiptext="Campo obligatorio" style="color: red" />
-							<label value="Pais: "
-								tooltiptext="Pais de donde se origina la moneda." />
+							<label value="Selecciona un País:" />
 						</hlayout>
-						<textbox width="150px"
-							style="text-transform:uppercase;" constraint="no empty"
-							maxlength="18" value="@bind(vm.moneda.pais)"
-							onChange="@command('validaGuardar')" />
+			<combobox id="comboboxPaises" model="@{vm.paises}" 
+           onChange="@command('setPaisSeleccionado', paisSeleccionado = comboboxPaises.selectedItem)">
+    <template>
+        <comboitem label="@{each.nombre}" value="@{each}"/> <!-- Aquí se muestra el nombre del país -->
+    </template>
+</combobox>
+					</row>
+					<row>
+					<label value="Número de países: ${vm.paises.size()}" />
 					</row>
 					<row>
 						<hlayout>
@@ -84,7 +89,7 @@
 							<label value="Imagen "
 								tooltiptext="Material construida la moneda." />
 						</hlayout>
-						<image width="150px" 
+						<image width="150px"
 							src="@bind(vm.moneda.imagen)" />
 					</row>
 				</rows>

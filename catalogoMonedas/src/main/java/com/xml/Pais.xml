@@ -20,11 +20,6 @@
   			ID,
   			NOMBRE
   			FROM PAIS
-  		<trim prefix="WHERE" prefixOverrides="AND | OR ">
-			<if test="id != null ">
-				AND ID = #{id,jdbcType=NUMERIC} 
-			</if>
-		</trim>
 	</select>
 </mapper>
 

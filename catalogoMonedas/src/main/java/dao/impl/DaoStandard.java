@@ -65,4 +65,14 @@ public class DaoStandard<K> implements IDao<K> {
 		}
 	}
 
+	   @Override
+	   public List<K> obtenerListado(String sqlName) throws Exception {
+	        try {
+	            session = new MyBatisConfig().getSession();
+	            return session.selectList(sqlName);
+	        } finally {
+	            session.close(); 
+	        }
+	    }
+
 }

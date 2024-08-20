@@ -31,6 +31,6 @@
   			CONTRASENA,
   			ROL
   			FROM USUARIO
-  		WHERE UPPER(NOMBRE) =	
+  		WHERE UPPER(NOMBRE) = UPPER(#{nombre,jdbcType=VARCHAR})	
 	</select>
 </mapper>

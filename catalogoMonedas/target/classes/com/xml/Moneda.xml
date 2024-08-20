@@ -6,8 +6,7 @@
         <result property="monedaID" 			column="MONEDA_ID" />
         <result property="nombre" 			    column="NOMBRE" />
         <result property="anoCreacion" 			column="ANO_CREACION" />
-        <result property="pais.pais" 			column="PAIS" />
-        <result property="pais.pais" 			column="PAIS" />
+        <result property="pais.id" 				column="PAIS_ID" />
         <result property="valor" 			   	column="VALOR" />
         <result property="material" 			column="MATERIAL" />
         <result property="descripcion" 			column="DESCRIPCION" />
@@ -29,7 +28,7 @@
 	    VALUES
 	        (UPPER(#{nombre,jdbcType=VARCHAR}),
 	         #{anoCreacion,jdbcType=DATE},
-	         #{pais,jdbcType=VARCHAR},
+	         #{pais.id,jdbcType=NUMERIC},
 	         #{valor, jdbcType=NUMERIC},
 	         UPPER(#{material,jdbcType=VARCHAR}),
 	         UPPER(#{descripcion,jdbcType=VARCHAR}),
@@ -43,7 +42,7 @@
     	   SET 
     	    NOMBRE        = UPPER(#{nombre,jdbcType=VARCHAR}),
 			ANO_CREACION  =	#{anoCreacion,jdbcType=DATE},
-			PAIS          =	#{pais,jdbcType=VARCHAR},
+			PAIS          =	#{pais.id,jdbcType=NUMERIC},
 			VALOR         =	#{valor, jdbcType=NUMERIC})
 			MATERIAL      =	UPPER(#{material,jdbcType=VARCHAR}),
 			DESCRIPCION   =	UPPER(#{descripcion,jdbcType=VARCHAR}),
@@ -69,6 +68,8 @@
 	  		 MON.DESCRIPCION,
 	  		 MON.IMAGEN,
 	  		 MON.USUARIO_ID
+  	 	FROM MONEDA MON 
+  	 	INNER JOIN PAIS PAI ON PAI.ID = MON.PAIS_ID
   	 	FROM MONEDA MON 
   		WHERE MON.MONEDA_ID = #{monedaId, jdbcType=NUMERIC}
 	</select>
