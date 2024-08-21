@@ -7,6 +7,7 @@
         <result property="nombre" 			    column="NOMBRE" />
         <result property="anoCreacion" 			column="ANO_CREACION" />
         <result property="pais.id" 				column="PAIS_ID" />
+        <result property="pais.nombre" 			column="NOMBRE_PAIS" />
         <result property="valor" 			   	column="VALOR" />
         <result property="material" 			column="MATERIAL" />
         <result property="descripcion" 			column="DESCRIPCION" />
@@ -19,7 +20,7 @@
 	    INSERT INTO MONEDA 
 	       (NOMBRE,
 	        ANO_CREACION,
-	        PAIS,
+	        PAIS_ID,
 	        VALOR,
 	        MATERIAL,
 	        DESCRIPCION,
@@ -42,7 +43,7 @@
     	   SET 
     	    NOMBRE        = UPPER(#{nombre,jdbcType=VARCHAR}),
 			ANO_CREACION  =	#{anoCreacion,jdbcType=DATE},
-			PAIS          =	#{pais.id,jdbcType=NUMERIC},
+			PAIS_ID          =	#{pais.id,jdbcType=NUMERIC},
 			VALOR         =	#{valor, jdbcType=NUMERIC})
 			MATERIAL      =	UPPER(#{material,jdbcType=VARCHAR}),
 			DESCRIPCION   =	UPPER(#{descripcion,jdbcType=VARCHAR}),
@@ -63,6 +64,7 @@
 	  		 MON.NOMBRE,
 	  		 MON.ANO_CREACION, 
 	  		 MON.PAIS_ID, 
+	  		 PAI.NOMBRE AS NOMBRE_PAIS, 
 	  		 MON.VALOR,
 	  		 MON.MATERIAL,
 	  		 MON.DESCRIPCION,
@@ -79,7 +81,8 @@
 	  		 MON.MONEDA_ID,
 	  		 MON.NOMBRE,
 	  		 MON.ANO_CREACION, 
-	  		 MON.PAIS_ID, 
+	  		 MON.PAIS_ID,
+	  		 PAI.NOMBRE AS NOMBRE_PAIS, 
 	  		 MON.VALOR,
 	  		 MON.MATERIAL,
 	  		 MON.DESCRIPCION,

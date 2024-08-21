@@ -3,7 +3,10 @@ package com.viewmodel.home;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -22,7 +25,7 @@ import util.Constantes;
 import util.SessionUtils;
 
 public class HomeViewModel {
-
+	private static final Logger log = LogManager.getLogger(HomeViewModel.class);
 	private List<Moneda> listaMonedas;
 	private int pageSize = 10;
 	private ListModelList<Moneda> listadoPaginado;
@@ -35,28 +38,29 @@ public class HomeViewModel {
 
 	@Init
 	public void init() {
-		System.out.println("Ejecutando el método init()...");
+		log.info("Ejecutando el método init()...");
 		// Llama al método estático creado para que no puedan acceder
 		if(SessionUtils.checkSession()) {
 			usuario = (Usuario) Sessions.getCurrent().getAttribute("user");
-			System.out.println("El ID del usuario logueado es: " + usuario.getUsuario_id());
+			log.info("El ID del usuario logueado es: " + usuario.getUsuario_id());
 		};
 		daoStandard = new DaoStandard<Moneda>();
+		monedaSelect  = new Moneda();
 		cargarPaginadoMonedas();
 	}
 
 
     @Command
     @NotifyChange("*")
-    public void selectMoneda(Moneda moneda) {
+    public void selectMoneda(@BindingParam("item") Moneda moneda) {
         monedaSelect = moneda;
         // Aquí puedes manejar la lógica de lo que quieres hacer con la moneda seleccionada
-        System.out.println("Moneda seleccionada: " + moneda.getNombre());
+        log.info("Moneda seleccionada: " + moneda.getNombre());
     }
 
 	@NotifyChange("*")
 	public void cargarPaginadoMonedas() {
-		System.out.println("Ejecutando el método cargarPaginadoMonedas...");
+		log.info("Ejecutando el método cargarPaginadoMonedas...");
 		try {
 			moneda = new Moneda();
 			moneda.setUsuario(usuario);
@@ -65,10 +69,18 @@ public class HomeViewModel {
 			  BindUtils.postNotifyChange(null, null, this, "listadoPaginado");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e);
+			log.info(e);
 		}
 	}
 
+	 public String getRowClass(Moneda moneda) {
+		 log.info("Ejecutando el método getRowClass...");
+	        if (moneda.equals(monedaSelect)) {
+	            return "selected-row";
+	        }
+	        return "";
+	    }
+	 
 	@Command
 	@NotifyChange("listadoPaginado")
 	public void paginar(Paging paging) {
@@ -80,7 +92,7 @@ public class HomeViewModel {
 	
 	@Command
 	public void onNuevo() {
-		System.out.println("Ejecutando el método cargarPaginadoMonedas...");
+		log.info("Ejecutando el método cargarPaginadoMonedas...");
 		HashMap<String, Object> map = new HashMap<String,Object>();
 		map.put("OBJETO", moneda);
 		map.put("PADRE", this);
@@ -91,7 +103,7 @@ public class HomeViewModel {
 
 	@Command
 	public void logout() {
-		System.out.println("Ejecutando el método logout()...");
+		log.info("Ejecutando el método logout()...");
 		Sessions.getCurrent().invalidate();
 		Executions.sendRedirect("/login.zul");
 		Notification.show("Has cerrado sesión exitosamente.");

@@ -2,6 +2,8 @@ package com.viewmodel;
 
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
@@ -14,23 +16,22 @@ import com.dto.Usuario;
 
 import config.PasswordEncryption;
 import dao.impl.DaoStandard;
-import util.ClassLogger;
 import util.Constantes;
 
-public class LoginViewModel extends ClassLogger {
-
+public class LoginViewModel {
+	private static final Logger log = LogManager.getLogger(LoginViewModel.class);
 	private Usuario usuario;
 	private Window window;
 	private DaoStandard<Usuario> daoStandard = new DaoStandard<Usuario>();;
 
 	@Init
 	public void onInicializa() {
-		System.out.println("Ejecuta el método onInicializa...");
+		log.info("Ejecuta el método onInicializa...");
 		usuario = new Usuario();
 	}
 
 	public void onLogin() {
-		System.out.println("Ejecuta el método onLogin...");
+		log.info("Ejecuta el método onLogin...");
 		if (usuario.getNombre() != null && usuario.getContrasena() != null) {
 			try {
 				Usuario usuarioDB = (Usuario) daoStandard.obtenerRegistro("SelectXUsuario", usuario);
@@ -40,7 +41,7 @@ public class LoginViewModel extends ClassLogger {
 				    String enteredPassword = usuario.getContrasena(); 
 
 				    boolean isAuthenticated = PasswordEncryption.checkPassword(enteredPassword, storedHash);
-				    System.out.println("isAuthenticated: " + isAuthenticated);
+				    log.info("isAuthenticated: " + isAuthenticated);
 
 				    if (isAuthenticated) {
 				        Sessions.getCurrent().setAttribute("user", usuarioDB);
@@ -53,7 +54,7 @@ public class LoginViewModel extends ClassLogger {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println(e);
+				log.info(e);
 			}
 		} else {
 			Notification.show(Constantes.FORMULARIO_VACIO);
@@ -63,7 +64,7 @@ public class LoginViewModel extends ClassLogger {
 
 	@Command
 	public void registroUser(Event e) {
-		System.out.println("Ejecuta el método registroUser...");
+		log.info("Ejecuta el método registroUser...");
 		HashMap<String, Object> map = new HashMap<String,Object>();
 		map.put("PADRE", this);
 		window = (Window) Executions.createComponents("zul//user/registro_user.zul", null, map);

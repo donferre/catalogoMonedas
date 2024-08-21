@@ -12,7 +12,7 @@
   			ID,
   			NOMBRE
   			FROM PAIS
-  		WHERE  ID = #{ID, jdbcType=NUMERIC}
+  		WHERE  ID = #{id, jdbcType=NUMERIC}
 	</select>
 	
 	<select id="listadoPaginadoXPais"  parameterType="Map" resultMap="resMapPaisMapper">
@@ -20,6 +20,14 @@
   			ID,
   			NOMBRE
   			FROM PAIS
+  		<trim prefix="WHERE" prefixOverrides="AND | OR ">
+			<if test="id != null">
+				AND PAIS.ID = #{id,jdbcType=NUMERIC} 
+			</if>
+			<if test="nombre != null and nombre != '' ">
+				AND PAIS.NOMBRE = #{nombre,jdbcType=NUMERIC} 
+			</if>
+		</trim>	
 	</select>
 </mapper>
 

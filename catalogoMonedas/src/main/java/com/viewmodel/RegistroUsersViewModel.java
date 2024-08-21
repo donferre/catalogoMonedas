@@ -2,6 +2,8 @@ package com.viewmodel;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -23,6 +25,7 @@ import util.Constantes;
 
 public class RegistroUsersViewModel extends SelectorComposer<Component> {
 	private static final long serialVersionUID = 1L;
+	private static final Logger log = LogManager.getLogger(LoginViewModel.class);
 	private Usuario usuario = new Usuario();
 	private String contrasena;
 	private LoginViewModel padre;
@@ -31,14 +34,14 @@ public class RegistroUsersViewModel extends SelectorComposer<Component> {
 
 	@AfterCompose
 	public void afterCompose() {
-		System.out.println("Ejecutando el método afterCompose()...");
+		log.info("Ejecutando el método afterCompose()...");
 		daoStandard = new DaoStandard<Usuario>();
 
 	}
 
 	@Init
 	public void init(@ContextParam(ContextType.VIEW) Component view, @ExecutionArgParam("PADRE") LoginViewModel vm) {
-		System.out.println("Ejecutando el método init...");
+		log.info("Ejecutando el método init...");
 		padre = vm;
 	}
 
@@ -51,7 +54,7 @@ public class RegistroUsersViewModel extends SelectorComposer<Component> {
 	@Command
 	@NotifyChange("*")
 	public void onGuardarUsuario() {
-		System.out.println("Ejecutando el método onGuardarUsuario()...");
+		log.info("Ejecutando el método onGuardarUsuario()...");
 		try {
 			if (usuario.getNombre() == null || usuario.getContrasena() == null) {
 				Messagebox.show(Constantes.FORMULARIO_VACIO, "Usuarios", Messagebox.OK, Messagebox.EXCLAMATION);
@@ -65,7 +68,7 @@ public class RegistroUsersViewModel extends SelectorComposer<Component> {
 			List<Usuario> dtousuario = (List<Usuario>) daoStandard.obtenerListado("SelectXUsuario", usuario);
 
 			if (dtousuario.size() > 0) {
-				System.out.println("TAMAÑO LISTA: " + dtousuario.size());
+				log.info("TAMAÑO LISTA: " + dtousuario.size());
 				Messagebox.show(Constantes.USUARIO_EXISTENTE, "Usuarios", Messagebox.OK, Messagebox.EXCLAMATION);
 				return;
 			}

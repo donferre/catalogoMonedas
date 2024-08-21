@@ -1,13 +1,13 @@
 <zk xmlns:n="native">
-	<window title="Registro de Moneda" border="normal" width="700px"
+	<window title="Registro de Moneda" border="normal" width="550px"
 		viewModel="@id('vm') @init('com.viewmodel.home.ManageRecordViewModel')"
 		position="center,center" closable="true"
 		action="show: slideDown;hide: slideUp">
 		<vlayout>
 			<grid>
 				<columns hflex="true">
-					<column width="180px" />
-					<column hflex="true" />
+					<column width="160px" />
+					<column width="320px" />
 				</columns>
 				<rows>
 					<row>
@@ -50,15 +50,40 @@
 								tooltiptext="Campo obligatorio" style="color: red" />
 							<label value="Selecciona un País:" />
 						</hlayout>
-			<combobox id="comboboxPaises" model="@{vm.paises}" 
-           onChange="@command('setPaisSeleccionado', paisSeleccionado = comboboxPaises.selectedItem)">
-    <template>
-        <comboitem label="@{each.nombre}" value="@{each}"/> <!-- Aquí se muestra el nombre del país -->
-    </template>
-</combobox>
-					</row>
-					<row>
-					<label value="Número de países: ${vm.paises.size()}" />
+						<hbox>
+							<bandbox id="bd"
+								value="@bind(vm.paisSeleccionado)" readonly="true">
+								<bandpopup>
+									<vbox>
+<!-- 										<hbox> -->
+<!-- 											<label value="Buscar:" /> -->
+<!-- 											<textbox -->
+<!-- 												value="@bind(vm.consulta)" -->
+<!-- 												onChanging="@command('filtrarPaises')" /> -->
+<!-- 										</hbox> -->
+										<listbox
+											model="@bind(vm.paises)" onSelect="bd.close()"
+											selectedItem="@bind(vm.paisSeleccionado)" width="300px">
+											<listhead>
+												<listheader label="Id"
+													width="40%" />
+												<listheader
+													label="Nombre" width="60%" />
+											</listhead>
+											<template name="model"
+												var="paises">
+												<listitem>
+													<listcell
+														label="${paises.id}" />
+													<listcell
+														label="${paises.nombre}" />
+												</listitem>
+											</template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>
+						</hbox>
 					</row>
 					<row>
 						<hlayout>
@@ -89,8 +114,8 @@
 							<label value="Imagen "
 								tooltiptext="Material construida la moneda." />
 						</hlayout>
-						<image width="150px"
-							src="@bind(vm.moneda.imagen)" />
+<!-- 						<image width="150px" -->
+<!-- 							src="@bind(vm.moneda.imagen)" /> -->
 					</row>
 				</rows>
 			</grid>
