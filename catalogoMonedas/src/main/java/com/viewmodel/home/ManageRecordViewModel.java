@@ -50,7 +50,7 @@ public class ManageRecordViewModel {
 		paises = obtenerPaisesDesdeBaseDeDatos();
 		BindUtils.postNotifyChange(null, null, this, "paises");
 		if (formulario.equals("U")) {
-
+			
 		}
 	}
 
@@ -101,12 +101,17 @@ public class ManageRecordViewModel {
 	@Command
 	@NotifyChange("*")
 	public void onGuardarMoneda() {
-		log.info("Ejecutando el método onGuardarUsuario()...");
+		log.info("Ejecutando el método onGuardarMoneda()...");
 		try {
 			log.info("paisSeleccionado ::  "+paisSeleccionado);
 			moneda.setPais(paisSeleccionado);
+			if(formulario.equals("N")) {
 			daoStandard.insertarRegistro("guardarMoneda", moneda);
-			Notification.show(Constantes.REGISTRO_NUEVO, "info", null, "top_right", 3000);
+			Notification.show(Constantes.REGISTRO_NUEVO, "info", null, "top_right", 3000);}
+			else if(formulario.equals("U")) {
+			daoStandard.actualizarRegistro("ActualizarMoneda", moneda);
+			Notification.show(Constantes.REGISTRO_ACTUALIZADO, "info", null, "top_right", 3000);
+			}
 			padre.cargarPaginadoMonedas();
 			padre.getWindow().detach();
 		} catch (Exception e) {

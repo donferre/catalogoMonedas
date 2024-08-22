@@ -1,6 +1,7 @@
 package com.viewmodel;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,12 +23,16 @@ public class LoginViewModel {
 	private static final Logger log = LogManager.getLogger(LoginViewModel.class);
 	private Usuario usuario;
 	private Window window;
+	private String okLogin = "S";
 	private DaoStandard<Usuario> daoStandard = new DaoStandard<Usuario>();;
 
 	@Init
 	public void onInicializa() {
 		log.info("Ejecuta el método onInicializa...");
 		usuario = new Usuario();
+		  if (Sessions.getCurrent().getAttribute("user") != null) {
+		        Sessions.getCurrent().invalidate();
+		    }
 	}
 
 	public void onLogin() {
@@ -44,6 +49,7 @@ public class LoginViewModel {
 				    log.info("isAuthenticated: " + isAuthenticated);
 
 				    if (isAuthenticated) {
+				    	Sessions.getCurrent().setAttribute("PADRE", this);
 				        Sessions.getCurrent().setAttribute("user", usuarioDB);
 				        Executions.sendRedirect("zul/home/home.zul");
 				    } else {
@@ -85,6 +91,14 @@ public class LoginViewModel {
 
 	public void setWindow(Window window) {
 		this.window = window;
+	}
+
+	public String getOkLogin() {
+		return okLogin;
+	}
+
+	public void setOkLogin(String okLogin) {
+		this.okLogin = okLogin;
 	}
 
 }

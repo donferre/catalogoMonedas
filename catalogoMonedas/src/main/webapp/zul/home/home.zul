@@ -16,18 +16,16 @@
 				<toolbar
 					style="height: 40px; padding: 5px; background-color: #f0f0f0; border: 1px solid #ddd;">
 					<toolbarbutton label="Nuevo"
-						tooltiptext="Añadir nuevo"
-						onClick="@command('onNuevo')"
-						style="width: 80px; height: 25px; font-size: 12px; margin-right: 10px; background-color: #007bff; color: white;" />
+						tooltiptext="Añadir nuevo" onClick="@command('onNuevo')"/>
 					<toolbarbutton label="Editar"
-						tooltiptext="Editar seleccionado"
+						tooltiptext="Editar seleccionado" onClick="@command('onEditar')"
 						disabled="@load((vm.botones =='N' or vm.botones =='U' or vm.botones !='S')?true:false)"
-						style="width: 80px; height: 25px; font-size: 12px; margin-right: 10px; background-color: #28a745; color: white;" />
+						 />
 					<toolbarbutton label="Eliminar"
-						tooltiptext="Eliminar seleccionado"
-						style="width: 80px; height: 25px; font-size: 12px; background-color: #dc3545; color: white;" />
+						tooltiptext="Eliminar seleccionado" />
 				</toolbar>
-				<grid model="@load(vm.listadoPaginado)" width="100%" height="100%" selectedItem="@bind(vm.monedaSelect)">
+				<grid model="@load(vm.listadoPaginado)" width="100%"
+					height="100%" selectedItem="@bind(vm.monedaSelect)">
 					<columns>
 						<column label="ID" width="50px" />
 						<column label="Nombre" />
@@ -39,7 +37,8 @@
 						<column label="Imagen" />
 					</columns>
 					<template name="model" var="moneda">
-						<row>
+						<row
+							onClick="@command('selectMoneda', item=moneda)">
 							<label value="@load(moneda.monedaID)" />
 							<label value="@load(moneda.nombre)" />
 							<label value="@load(moneda.descripcion)" />

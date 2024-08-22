@@ -1,0 +1,5 @@
+@charset "ISO-8859-1";
+.selected-row {
+    background-color: #e0e0e0; /* Color de fondo para la fila seleccionada */
+    border: 1px solid #007bff; /* Borde para la fila seleccionada (opcional) */
+}

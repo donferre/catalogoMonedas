@@ -2,14 +2,19 @@ package com.viewmodel.home;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
+import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Notification;
@@ -19,6 +24,7 @@ import org.zkoss.zul.Window;
 
 import com.dto.Moneda;
 import com.dto.Usuario;
+import com.viewmodel.LoginViewModel;
 
 import dao.impl.DaoStandard;
 import util.Constantes;
@@ -53,6 +59,7 @@ public class HomeViewModel {
     @Command
     @NotifyChange("*")
     public void selectMoneda(@BindingParam("item") Moneda moneda) {
+    	botones = "S";
         monedaSelect = moneda;
         // Aquí puedes manejar la lógica de lo que quieres hacer con la moneda seleccionada
         log.info("Moneda seleccionada: " + moneda.getNombre());
@@ -92,11 +99,22 @@ public class HomeViewModel {
 	
 	@Command
 	public void onNuevo() {
-		log.info("Ejecutando el método cargarPaginadoMonedas...");
+		log.info("Ejecutando el método onNuevo...");
 		HashMap<String, Object> map = new HashMap<String,Object>();
 		map.put("OBJETO", moneda);
 		map.put("PADRE", this);
 		map.put("ACCION", Constantes.NUEVO);
+		window = (Window) Executions.createComponents("manageRecord.zul", null, map);
+		window.doModal();
+	}
+	
+	@Command
+	public void onEditar() {
+		log.info("Ejecutando el método onEditar...");
+		HashMap<String, Object> map = new HashMap<String,Object>();
+		map.put("OBJETO", moneda);
+		map.put("PADRE", this);
+		map.put("ACCION", Constantes.EDITAR);
 		window = (Window) Executions.createComponents("manageRecord.zul", null, map);
 		window.doModal();
 	}
@@ -169,6 +187,8 @@ public class HomeViewModel {
 	public void setMonedaSelect(Moneda monedaSelect) {
 		this.monedaSelect = monedaSelect;
 	}
+
+	
 	
 	
 }
