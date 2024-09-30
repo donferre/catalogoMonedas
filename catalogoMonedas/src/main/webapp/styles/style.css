@@ -1,0 +1,21 @@
+.toolbarbutton-active {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.toolbarbutton-active:hover {
+    background-color: #0056b3;
+}
+
+.toolbarbutton-disabled {
+    background-color: #cccccc !important;
+    color: #666666 !important;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: not-allowed;
+}

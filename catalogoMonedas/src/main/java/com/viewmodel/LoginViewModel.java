@@ -1,7 +1,6 @@
 package com.viewmodel;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +28,7 @@ public class LoginViewModel {
 	@Init
 	public void onInicializa() {
 		log.info("Ejecuta el método onInicializa...");
+		log.info("INICIAAA");
 		usuario = new Usuario();
 		  if (Sessions.getCurrent().getAttribute("user") != null) {
 		        Sessions.getCurrent().invalidate();

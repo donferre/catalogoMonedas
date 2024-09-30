@@ -44,19 +44,19 @@
     	    NOMBRE        = UPPER(#{nombre,jdbcType=VARCHAR}),
 			ANO_CREACION  =	#{anoCreacion,jdbcType=DATE},
 			PAIS_ID          =	#{pais.id,jdbcType=NUMERIC},
-			VALOR         =	#{valor, jdbcType=NUMERIC})
+			VALOR         =	#{valor, jdbcType=NUMERIC},
 			MATERIAL      =	UPPER(#{material,jdbcType=VARCHAR}),
 			DESCRIPCION   =	UPPER(#{descripcion,jdbcType=VARCHAR}),
 			IMAGEN        =	#{imagen,jdbcType=BLOB}
-			WHERE MONEDA_ID = #{monedaId, jdbcType=NUMERIC}
+			WHERE MONEDA_ID = #{monedaID, jdbcType=NUMERIC}
 			 AND USUARIO_ID = #{usuario.usuario_id, jdbcType=NUMERIC};
     </update>
     
-    <delete id="EliminarMoneda" parameterType="aliasMoneda">
-    	DELETE FROM MONEDA
-			WHERE MONEDA_ID = #{monedaId, jdbcType=NUMERIC}
-			 AND USUARIO_ID = #{usuario.usuario_id, jdbcType=NUMERIC};
-    </delete>
+	<delete id="EliminarMoneda" parameterType="aliasMoneda">
+	    DELETE FROM MONEDA
+	    WHERE MONEDA_ID = #{monedaID, jdbcType=NUMERIC}
+	      AND USUARIO_ID = #{usuario.usuario_id, jdbcType=NUMERIC}
+	</delete>
     
 	<select id="SelectXMoneda"  parameterType="aliasMoneda" resultMap="resMapMonedaMapper">
   		SELECT

@@ -1,4 +1,10 @@
-<zk>
+<?xml version="1.0" encoding="UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+	<style src="/styles/style.css" />
 	<borderlayout width="100%" height="100%"
 		viewModel="@id('vm') @init('com.viewmodel.home.HomeViewModel') ">
 		<north size="60px">
@@ -16,40 +22,45 @@
 				<toolbar
 					style="height: 40px; padding: 5px; background-color: #f0f0f0; border: 1px solid #ddd;">
 					<toolbarbutton label="Nuevo"
-						tooltiptext="Añadir nuevo" onClick="@command('onNuevo')"/>
+						tooltiptext="Añadir nuevo" onClick="@command('onNuevo')"
+						sclass="@load(vm.botones eq 'N' || vm.botones eq 'U' ? 'toolbarbutton-disabled' : 'toolbarbutton-active')" />
 					<toolbarbutton label="Editar"
 						tooltiptext="Editar seleccionado" onClick="@command('onEditar')"
-						disabled="@load((vm.botones =='N' or vm.botones =='U' or vm.botones !='S')?true:false)"
-						 />
+						disabled="@load((vm.botones eq'N' or vm.botones eq'U' or vm.botones !='S')?true:false)"
+						sclass="@load((vm.botones eq'N' or vm.botones eq'U' or vm.botones !='S') ? 'toolbarbutton-disabled' : 'toolbarbutton-active')" />
+
 					<toolbarbutton label="Eliminar"
-						tooltiptext="Eliminar seleccionado" />
+						tooltiptext="Eliminar seleccionado" onClick="@command('onBorrarMaestro')"
+						disabled="@load((vm.botones eq'N' or vm.botones eq'U' or vm.botones !='S')?true:false)"
+						sclass="@load((vm.botones eq'N' or vm.botones eq'U' or vm.botones !='S') ? 'toolbarbutton-disabled' : 'toolbarbutton-active')" />
 				</toolbar>
-				<grid model="@load(vm.listadoPaginado)" width="100%"
+				<listbox model="@load(vm.listadoPaginado)" width="100%"
 					height="100%" selectedItem="@bind(vm.monedaSelect)">
-					<columns>
-						<column label="ID" width="50px" />
-						<column label="Nombre" />
-						<column label="Descripción" />
-						<column label="Año de Fabricación" />
-						<column label="Pais" />
-						<column label="Valor" />
-						<column label="Material" />
-						<column label="Imagen" />
-					</columns>
+					<listhead>
+						<listheader label="ID" width="50px" />
+						<listheader label="Nombre" />
+						<listheader label="Descripción" />
+						<listheader label="Año de Fabricación" />
+						<listheader label="Pais" />
+						<listheader label="Valor" />
+						<listheader label="Material" />
+						<listheader label="Imagen" />
+					</listhead>
 					<template name="model" var="moneda">
-						<row
+						<listitem
 							onClick="@command('selectMoneda', item=moneda)">
-							<label value="@load(moneda.monedaID)" />
-							<label value="@load(moneda.nombre)" />
-							<label value="@load(moneda.descripcion)" />
-							<label value="@load(moneda.anoCreacion)" />
-							<label value="@load(moneda.pais)" />
-							<label value="@load(moneda.valor)" />
-							<label value="@load(moneda.material)" />
-							<!-- 						<image src="@load(moneda.imagen)" width="50px" height="50px" /> -->
-						</row>
+							<listcell label="@load(moneda.monedaID)" />
+							<listcell label="@load(moneda.nombre)" />
+							<listcell label="@load(moneda.descripcion)" />
+							<listcell
+								label="@bind(c:formatDate (moneda.anoCreacion, 'dd/MM/yyyy'))" />
+							<listcell label="@load(moneda.pais)" />
+							<listcell label="@load(moneda.valor)" />
+							<listcell label="@load(moneda.material)" />
+							<!-- <listcell><image src="@load(moneda.imagen)" width="50px" height="50px" /></listcell> -->
+						</listitem>
 					</template>
-				</grid>
+				</listbox>
 			</vbox>
 		</center>
 		<south size="auto">

@@ -2,34 +2,32 @@ package com.viewmodel.home;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.ContextParam;
-import org.zkoss.bind.annotation.ContextType;
-import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Notification;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Window;
 
 import com.dto.Moneda;
 import com.dto.Usuario;
-import com.viewmodel.LoginViewModel;
 
 import dao.impl.DaoStandard;
 import util.Constantes;
+import util.FechasUtil;
 import util.SessionUtils;
 
+//Los comentarios son para dejar información que me sirva para recordar.
 public class HomeViewModel {
 	private static final Logger log = LogManager.getLogger(HomeViewModel.class);
 	private List<Moneda> listaMonedas;
@@ -41,29 +39,34 @@ public class HomeViewModel {
 	private Usuario usuario;
 	private String botones;
 	private Window window;
+	private FechasUtil fechasUtil;
 
 	@Init
 	public void init() {
 		log.info("Ejecutando el método init()...");
 		// Llama al método estático creado para que no puedan acceder
-		if(SessionUtils.checkSession()) {
+		if (SessionUtils.checkSession()) {
 			usuario = (Usuario) Sessions.getCurrent().getAttribute("user");
 			log.info("El ID del usuario logueado es: " + usuario.getUsuario_id());
-		};
+		}
+		;
+		fechasUtil = new FechasUtil();
 		daoStandard = new DaoStandard<Moneda>();
-		monedaSelect  = new Moneda();
+		monedaSelect = new Moneda();
 		cargarPaginadoMonedas();
 	}
 
-
-    @Command
-    @NotifyChange("*")
-    public void selectMoneda(@BindingParam("item") Moneda moneda) {
-    	botones = "S";
-        monedaSelect = moneda;
-        // Aquí puedes manejar la lógica de lo que quieres hacer con la moneda seleccionada
-        log.info("Moneda seleccionada: " + moneda.getNombre());
-    }
+	@Command
+	@NotifyChange("*")
+	public void selectMoneda(@BindingParam("item") Moneda moneda) {
+		botones = "S";
+		monedaSelect = moneda;
+		/*
+		 * Aquí puedo manejar la lógica de lo que quieres hacer con la moneda
+		 * seleccionada
+		 */
+		log.info("Moneda seleccionada: " + moneda.getNombre());
+	}
 
 	@NotifyChange("*")
 	public void cargarPaginadoMonedas() {
@@ -73,48 +76,51 @@ public class HomeViewModel {
 			moneda.setUsuario(usuario);
 			listaMonedas = daoStandard.obtenerListado("listadoPaginadoXMoneda", moneda);
 			listadoPaginado = new ListModelList<>(listaMonedas.subList(0, Math.min(pageSize, listaMonedas.size())));
-			  BindUtils.postNotifyChange(null, null, this, "listadoPaginado");
+			BindUtils.postNotifyChange(null, null, this, "listadoPaginado");
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.info(e);
+			Notification.show(e.getMessage());
 		}
 	}
 
-	 public String getRowClass(Moneda moneda) {
-		 log.info("Ejecutando el método getRowClass...");
-	        if (moneda.equals(monedaSelect)) {
-	            return "selected-row";
-	        }
-	        return "";
-	    }
-	 
+	public String getRowClass(Moneda moneda) {
+		log.info("Ejecutando el método getRowClass...");
+		if (moneda.equals(monedaSelect)) {
+			return "selected-row";
+		}
+		return "";
+	}
+
 	@Command
 	@NotifyChange("listadoPaginado")
 	public void paginar(Paging paging) {
 		int start = paging.getActivePage() * pageSize;
 		int end = Math.min(start + pageSize, listaMonedas.size());
 		listadoPaginado = new ListModelList<>(listaMonedas.subList(start, end));
-	BindUtils.postNotifyChange(paging, botones);
+		BindUtils.postNotifyChange(paging, botones);
 	}
-	
+
 	@Command
 	public void onNuevo() {
 		log.info("Ejecutando el método onNuevo...");
-		HashMap<String, Object> map = new HashMap<String,Object>();
-		map.put("OBJETO", moneda);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("OBJETO", monedaSelect);
 		map.put("PADRE", this);
 		map.put("ACCION", Constantes.NUEVO);
+		map.put("USUARIO", usuario);
+		log.info("MONEDA: " + moneda.getMonedaID());
 		window = (Window) Executions.createComponents("manageRecord.zul", null, map);
 		window.doModal();
 	}
-	
+
 	@Command
 	public void onEditar() {
 		log.info("Ejecutando el método onEditar...");
-		HashMap<String, Object> map = new HashMap<String,Object>();
-		map.put("OBJETO", moneda);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("OBJETO", monedaSelect);
 		map.put("PADRE", this);
 		map.put("ACCION", Constantes.EDITAR);
+		map.put("USUARIO", usuario);
 		window = (Window) Executions.createComponents("manageRecord.zul", null, map);
 		window.doModal();
 	}
@@ -130,6 +136,32 @@ public class HomeViewModel {
 		 * Redirigir al usuario a la página de inicio de sesión login. Mostrar mensaje
 		 * para alertar.
 		 */
+	}
+
+	@Command
+	@NotifyChange("*")
+	public void onBorrarMaestro() {
+		log.info("Ejecutando el método [ onBorrarMaestro ].....");
+		Messagebox.show("¿Estas seguro de continuar con la eliminación de la moneda: " + monedaSelect.getNombre() + "?",
+				"Borrar", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
+				new org.zkoss.zk.ui.event.EventListener<Event>() {
+					public void onEvent(Event evt) throws InterruptedException {
+						if (evt.getName().equals("onOK")) {
+							log.info("siiiii");
+							try {
+								daoStandard.borrarRegistro("EliminarMoneda", monedaSelect);
+							} catch (Exception e) {
+								log.info("ERROR!!");
+								e.printStackTrace();
+								Notification.show(e.getMessage());
+							}
+							Notification.show("Registro eliminado correctamente.");
+							cargarPaginadoMonedas();
+						} else {
+							log.info("CANCELADO");
+						}
+					}
+				});
 	}
 
 	public List<Moneda> getListaMonedas() {
@@ -188,7 +220,12 @@ public class HomeViewModel {
 		this.monedaSelect = monedaSelect;
 	}
 
-	
-	
-	
+	public FechasUtil getFechasUtil() {
+		return fechasUtil;
+	}
+
+	public void setFechasUtil(FechasUtil fechasUtil) {
+		this.fechasUtil = fechasUtil;
+	}
+
 }

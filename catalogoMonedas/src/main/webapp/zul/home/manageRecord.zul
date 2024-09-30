@@ -1,4 +1,5 @@
-<zk xmlns:n="native">
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk xmlns="http://www.zkoss.org/2005/zul">
 	<window title="Registro de Moneda" border="normal" width="550px"
 		viewModel="@id('vm') @init('com.viewmodel.home.ManageRecordViewModel')"
 		position="center,center" closable="true"
@@ -51,7 +52,7 @@
 							<label value="Selecciona un País:" />
 						</hlayout>
 						<hbox>
-							<bandbox id="bd"
+							<bandbox id="bd" constraint="no empty"
 								value="@bind(vm.paisSeleccionado)" readonly="true">
 								<bandpopup>
 									<vbox>
@@ -123,7 +124,7 @@
 			<div align="right">
 				<hlayout>
 					<button label="Guardar"
-						tooltiptext="Guardar Registro" disabled="@bind(vm.camposForm)"
+						tooltiptext="Guardar Registro"
 						onClick="@command('onGuardarMoneda')" />
 					<button id="closeBtn" label="Cancelar"
 						tooltiptext="Cancelar" onClick="@command('onCancelar')" />
