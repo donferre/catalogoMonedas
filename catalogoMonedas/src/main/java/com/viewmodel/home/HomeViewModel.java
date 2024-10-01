@@ -65,10 +65,8 @@ public class HomeViewModel {
 		 * Aquí puedo manejar la lógica de lo que quieres hacer con la moneda
 		 * seleccionada
 		 */
-		log.info("Moneda seleccionada: " + moneda.getNombre());
 	}
 
-	@NotifyChange("*")
 	public void cargarPaginadoMonedas() {
 		log.info("Ejecutando el método cargarPaginadoMonedas...");
 		try {
@@ -81,14 +79,6 @@ public class HomeViewModel {
 			e.printStackTrace();
 			Notification.show(e.getMessage());
 		}
-	}
-
-	public String getRowClass(Moneda moneda) {
-		log.info("Ejecutando el método getRowClass...");
-		if (moneda.equals(monedaSelect)) {
-			return "selected-row";
-		}
-		return "";
 	}
 
 	@Command
@@ -108,7 +98,6 @@ public class HomeViewModel {
 		map.put("PADRE", this);
 		map.put("ACCION", Constantes.NUEVO);
 		map.put("USUARIO", usuario);
-		log.info("MONEDA: " + moneda.getMonedaID());
 		window = (Window) Executions.createComponents("manageRecord.zul", null, map);
 		window.doModal();
 	}
@@ -147,7 +136,6 @@ public class HomeViewModel {
 				new org.zkoss.zk.ui.event.EventListener<Event>() {
 					public void onEvent(Event evt) throws InterruptedException {
 						if (evt.getName().equals("onOK")) {
-							log.info("siiiii");
 							try {
 								daoStandard.borrarRegistro("EliminarMoneda", monedaSelect);
 							} catch (Exception e) {

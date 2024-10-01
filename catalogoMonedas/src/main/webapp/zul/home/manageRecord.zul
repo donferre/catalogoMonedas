@@ -20,8 +20,7 @@
 						</hlayout>
 						<textbox width="300px"
 							style="text-transform:uppercase;" constraint="no empty"
-							maxlength="20" value="@bind(vm.moneda.nombre)"
-							onChange="@command('validaGuardar')" />
+							maxlength="20" value="@bind(vm.monedaDetalle.nombre)" />
 					</row>
 					<row>
 						<hlayout>
@@ -32,7 +31,7 @@
 						</hlayout>
 						<textbox width="300px" rows="3"
 							style="resize:vertical" maxlength="100"
-							value="@bind(vm.moneda.descripcion)" />
+							value="@bind(vm.monedaDetalle.descripcion)" />
 					</row>
 					<row>
 						<hlayout>
@@ -42,8 +41,8 @@
 								tooltiptext="Ingrese el año que fue fabricada la moneda." />
 						</hlayout>
 						<datebox width="150px" constraint="no empty"
-							onChange="@command('validaGuardar')"
-							value="@bind(vm.moneda.anoCreacion)" />
+							value="@bind(vm.monedaDetalle.anoCreacion)" 
+							format="dd/MM/yyyy"/>
 					</row>
 					<row>
 						<hlayout>
@@ -94,8 +93,7 @@
 								tooltiptext="Valor monetario equivalente de la moneda." />
 						</hlayout>
 						<decimalbox width="150px" constraint="no empty"
-							maxlength="5" value="@bind(vm.moneda.valor)"
-							onChange="@command('validaGuardar')" />
+							maxlength="5" value="@bind(vm.monedaDetalle.valor)" />
 					</row>
 					<row>
 						<hlayout>
@@ -106,7 +104,7 @@
 						</hlayout>
 						<textbox width="150px"
 							style="text-transform:uppercase;" maxlength="15"
-							value="@bind(vm.moneda.material)" />
+							value="@bind(vm.monedaDetalle.material)" />
 					</row>
 					<row>
 						<hlayout>
@@ -116,7 +114,7 @@
 								tooltiptext="Material construida la moneda." />
 						</hlayout>
 <!-- 						<image width="150px" -->
-<!-- 							src="@bind(vm.moneda.imagen)" /> -->
+<!-- 							src="@bind(vm.monedaDetalle.imagen)" /> -->
 					</row>
 				</rows>
 			</grid>

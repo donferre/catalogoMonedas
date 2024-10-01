@@ -1,7 +1,6 @@
 package com.viewmodel.home;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
-import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
@@ -28,7 +26,7 @@ import util.Constantes;
 
 public class ManageRecordViewModel {
 	private static final Logger log = LogManager.getLogger(ManageRecordViewModel.class);
-	private Moneda moneda;
+	private Moneda monedaDetalle;
 	private Usuario usuario;
 	/* Dao */
 	private DaoStandard<Moneda> daoStandard;
@@ -43,6 +41,19 @@ public class ManageRecordViewModel {
 	private List<Pais> paisesFiltrados;
 	private Map<String, Object> parametros;
 
+	@SuppressWarnings("unchecked")
+	@Init
+	public void init(@ContextParam(ContextType.VIEW) Component view) {
+		log.info("Ejecutando el método init...");
+		parametros = (Map<String, Object>) Executions.getCurrent().getArg();
+		monedaDetalle = new Moneda();
+		monedaDetalle = (Moneda) this.parametros.get("OBJETO");
+		padre = (HomeViewModel) this.parametros.get("PADRE");
+		formulario = (String) this.parametros.get("ACCION");
+		usuario = (Usuario) this.parametros.get("USUARIO");
+
+	}
+
 	@AfterCompose
 	public void afterCompose() {
 		log.info("Ejecutando el método afterCompose()...");
@@ -50,46 +61,21 @@ public class ManageRecordViewModel {
 		daoStandardPais = new DaoStandard<Pais>();
 		paisSeleccionado = new Pais();
 		paises = obtenerPaisesDesdeBaseDeDatos();
-		BindUtils.postNotifyChange(null, null, this, "paises");
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Init
-	public void init(@ContextParam(ContextType.VIEW) Component view) {
-		log.info("Ejecutando el método init...");
-		parametros = (Map<String, Object>) Executions.getCurrent().getArg();
-		moneda = new Moneda();
-		moneda = (Moneda) this.parametros.get("OBJETO");
-		padre = (HomeViewModel) this.parametros.get("PADRE");
-		formulario = (String) this.parametros.get("ACCION");
-		usuario = (Usuario) this.parametros.get("USUARIO");
 		if (formulario.equals("U")) {
 			log.info("ACTUALIZANDO REGISTRO...");
-			seleccion(moneda);
+			seleccion(monedaDetalle);
 		} else if (formulario.equals("N")) {
 			log.info("NUEVO REGISTRO...");
-			moneda = new Moneda();
+			monedaDetalle = new Moneda();
 		}
-	}
-
-	@NotifyChange("*")
-	public void validaGuardar() {
-		log.info("Ejecutando el método validaGuardar...");
-		if (moneda != null) {
-			if ((moneda.getNombre() != null || !moneda.getNombre().isEmpty()) && moneda.getAnoCreacion() != null
-					&& this.paisSeleccionado != null && moneda.getValor() != null) {
-				camposForm = false;
-			} else {
-				camposForm = true;
-			}
-		}
+		BindUtils.postNotifyChange(null, null, this, "paises");
 	}
 
 	@NotifyChange("*")
 	public void seleccion(Moneda moneda) {
 		log.info("Ejecutando el método seleccion...");
-		this.moneda = moneda;
+		monedaDetalle = moneda;
+		paisSeleccionado = monedaDetalle.getPais();
 
 		BindUtils.postNotifyChange(null, null, this, "*");
 	}
@@ -108,11 +94,10 @@ public class ManageRecordViewModel {
 	@NotifyChange("*")
 	public void onCancelar() {
 		log.info("Ejecutando el método onCancelar...");
-		moneda = new Moneda();
-		moneda.setNombre("");
+		monedaDetalle = new Moneda();
+		padre.cargarPaginadoMonedas();
 		padre.getWindow().detach();
 		BindUtils.postNotifyChange(null, null, this, "*");
-		log.info("Ejecutando método onCancelar..." + moneda.getNombre());
 	}
 
 	@Command
@@ -120,18 +105,16 @@ public class ManageRecordViewModel {
 	public void onGuardarMoneda() {
 		log.info("Ejecutando el método onGuardarMoneda()...");
 		try {
+			monedaDetalle.setPais(paisSeleccionado);
+			monedaDetalle.setUsuario(usuario);
 			if (!validaFormulario()) {
 				Notification.show(Constantes.FORMULARIO_VACIO, "info", null, "top_right", 3000);
 			} else {
-				log.info("paisSeleccionado ::  " + paisSeleccionado);
-				log.info("paisSeleccionado ::  " + usuario);
-				moneda.setUsuario(usuario);
-				moneda.setPais(paisSeleccionado);
 				if (formulario.equals("N")) {
-					daoStandard.insertarRegistro("guardarMoneda", moneda);
+					daoStandard.insertarRegistro("guardarMoneda", monedaDetalle);
 					Notification.show(Constantes.REGISTRO_NUEVO, "info", null, "top_right", 3000);
 				} else if (formulario.equals("U")) {
-					daoStandard.actualizarRegistro("ActualizarMoneda", moneda);
+					daoStandard.actualizarRegistro("ActualizarMoneda", monedaDetalle);
 					Notification.show(Constantes.REGISTRO_ACTUALIZADO, "info", null, "top_right", 3000);
 				}
 				padre.cargarPaginadoMonedas();
@@ -159,10 +142,10 @@ public class ManageRecordViewModel {
 
 	public boolean validaFormulario() {
 		log.info("Ejecutando el método validaFormulario()...");
-		if (moneda.getNombre() != null  && moneda.getAnoCreacion() != null  && moneda.getPais().getId() != null) {
+		if (monedaDetalle.getNombre() != null && monedaDetalle.getAnoCreacion() != null && monedaDetalle.getPais().getId() != null) {
 			log.info("Ejecutando el método validaFormulario()...");
 			return true;
-		} 
+		}
 		return false;
 	}
 
@@ -178,12 +161,13 @@ public class ManageRecordViewModel {
 		return paisesFiltrados;
 	}
 
-	public Moneda getMoneda() {
-		return moneda;
+
+	public Moneda getMonedaDetalle() {
+		return monedaDetalle;
 	}
 
-	public void setMoneda(Moneda moneda) {
-		this.moneda = moneda;
+	public void setMonedaDetalle(Moneda monedaDetalle) {
+		this.monedaDetalle = monedaDetalle;
 	}
 
 	public boolean isCamposForm() {
